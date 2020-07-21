@@ -1,12 +1,13 @@
+// Invite this bot to your server!
+// https://discord.com/oauth2/authorize?client_id=734224877195755600&scope=bot
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const config = require('./bot_config.json');
-const int_flipLimit = Math.floor(2000/8); //Not the best calculation, just a guess at what the limit would be. Will handle the character limit issue better.
 
 // When the bot succesfully logs in
 client.on('ready', () => {
 	client.user.setUsername('Elf Bot');
-	//client.user.setAvatar('elfbot.png');
+	//client.user.setAvatar('elfbot.png'); // Discord doesn't like getting frequent avatar change requests
 	console.log(`Logged in as ${client.user.tag}!`);
 	setInterval(() => {
         setRandomActivity(activities);
@@ -29,7 +30,7 @@ client.on('message', msg => {
 
 });
 
-client.login(config.token);
+client.login(config.token); // Let the bot log-in!
 
 function coinFlip(msg, times = 1){
 	times = parseInt(times); // Sanitize the input! *scrubscrubscrub*
@@ -69,7 +70,25 @@ function coinFlip(msg, times = 1){
 
 function rollDice(msg,times=9,sides=6){
 	// Roll a 'sides'-sided die, 'times' times.
-	return msg.channel.send(`You want me to roll a ${sides}-sided die ${times} times... but I don't know how to do that yet.`);
+	// Ex. d20 | 4d20 | d6+9 | d6 + d9
+	args = msg.content.split(" ");
+
+	// I'm tired for now so I'm just gonna make a lazy functional thing.
+	if (!args[1]) return msg.channel.send('My creator is too tired to fix this rn');
+	if (args[1].startsWith("d")){
+		var dieValue = "";
+		i = 1
+		while(args[1][i] != null){
+			dieValue += args[1][i];
+			i++;
+		}
+		dieValue = parseInt(dieValue);
+		dieValue = Math.floor(Math.random() * dieValue);
+		return msg.channel.send(`You rolled a ${args[1]} and got ${dieValue}`);
+	}
+
+	//return msg.channel.send(`You want me to roll a ${sides}-sided die ${times} times... but I don't know how to do that yet.`);
+	return msg.channel.send('This function is WIP. For now you should be able to do simple rolls like \'!roll d20\'');
 }
 
 function setRandomActivity(activities){
