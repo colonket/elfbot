@@ -20,7 +20,7 @@ It's not the best bot for rolling dice or playing Dungeons and Dragons, but it's
 
 Elf Bot was made with `nodejs` and uses the `discordjs` package. 
 
-It's reccomended to have `git`, `nodejs`, and `npm` installed.
+It's recommended to have `git`, `nodejs`, and `npm` installed.
 
 ### Some Terminals you can run on Windows
 * Powershell
