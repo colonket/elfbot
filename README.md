@@ -45,7 +45,7 @@ node .      # runs Elf Bot
 ```
 ## Acquiring a Discord Bot Token
 
-
-
+Access the Discord Developer Portal to make your own Discord Bot!
+https://discord.com/developers/applications
 ## Special Thanks
 Thanks to Jack for relentlessly trying to break Elf Bot and even causing crashes along the way.
