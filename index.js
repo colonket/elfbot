@@ -6,8 +6,8 @@ const config = require('./bot_config.json');
 
 // When the bot succesfully logs in
 client.on('ready', () => {
-	client.user.setUsername('Elf Bot');
-	//client.user.setAvatar('elfbot.png'); // Discord doesn't like getting frequent avatar change requests
+	client.user.setUsername(config.username);
+	//client.user.setAvatar(config.avatar); // Discord doesn't like getting frequent avatar change requests
 	console.log(`Logged in as ${client.user.tag}!`);
 	setInterval(() => {
         setRandomActivity(activities);
