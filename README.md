@@ -4,7 +4,12 @@
 
 A discord bot to help you:
 * Roll dice!
+
+![Look at those rolls!](./screenshots/roll.gif)
+
 * Flip coins!
+
+![Don't mind the time](./screenshots/coin.gif)
 
 It's not the best bot for rolling dice or playing Dungeons and Dragons, but it's a fun bot to work on and bring to life!
 
