@@ -4,6 +4,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const config = require('./bot_config.json');
 
+
 // When the bot succesfully logs in
 client.on('ready', () => {
 	client.user.setUsername(config.username);
@@ -29,8 +30,6 @@ client.on('message', msg => {
 	}
 
 });
-
-client.login(config.token); // Let the bot log-in!
 
 function coinFlip(msg, times = 1){
 	times = parseInt(times); // Sanitize the input! *scrubscrubscrub*
@@ -68,27 +67,43 @@ function coinFlip(msg, times = 1){
 	return msg.channel.send(outcome);
 }
 
-function rollDice(msg,times=9,sides=6){
-	// Roll a 'sides'-sided die, 'times' times.
-	// Ex. d20 | 4d20 | d6+9 | d6 + d9
+function rollDice(msg){
+	// Ex. d20 | 4d20 | d6 + 9 | d6 + d9
 	args = msg.content.split(" ");
-
-	// I'm tired for now so I'm just gonna make a lazy functional thing.
-	if (!args[1]) return msg.channel.send('My creator is too tired to fix this rn');
-	if (args[1].startsWith("d")){
-		var dieValue = "";
-		i = 1
-		while(args[1][i] != null){
-			dieValue += args[1][i];
-			i++;
+	
+	// '!roll'
+	if (!args[1]) return msg.channel.send('Usage:\n\`!roll d20\`\n\`!roll 4d20\`\n\`!roll 4d20 + 6\`\n\`!roll 4d20 + 6d9\`');
+	
+	// '!roll #/d`
+	value = 0;
+	term = 1;
+	statement = `${dice_shaking} ${dice_throwing} `;
+	while(args[term] != null){
+		if (args[term].includes('d')){
+			[times,die_value] = args[term].split('d');
+			times = parseInt(times);
+			if(isNaN(times)) times = 1;
+			die_value = parseInt(die_value);
+			statement += '[';
+			for(i=1; i<=times; i++){
+				outcome = (1 + Math.floor(Math.random() * die_value))
+				value += outcome;
+				if(i == times){
+					statement += `**${outcome}**] + `;
+					break;
+				}
+				statement += `**${outcome}** + `;
+			}
+		} else if( !isNaN(parseInt(args[term])) ){
+			outcome = parseInt(args[term]);
+			value += outcome;
+			statement += `[**${outcome}**] + `;
 		}
-		dieValue = parseInt(dieValue);
-		dieValue = Math.floor(Math.random() * dieValue);
-		return msg.channel.send(`You rolled a ${args[1]} and got ${dieValue}`);
+		term++;
 	}
-
-	//return msg.channel.send(`You want me to roll a ${sides}-sided die ${times} times... but I don't know how to do that yet.`);
-	return msg.channel.send('This function is WIP. For now you should be able to do simple rolls like \'!roll d20\'');
+	statement = statement.substring(0,statement.length-2);
+	statement += `\n***${value}***`;
+	return msg.channel.send(statement);
 }
 
 function setRandomActivity(activities){
@@ -110,3 +125,7 @@ var activities = [
 	["the soft breeze",{type: 'LISTENING'}],
 	["a Vicious Mockery",{type: 'LISTENING'}]
 ]
+
+client.login(config.token); // Let the bot log-in!
+const dice_shaking = `<:dice_shaking:736084795871985675>` ;
+const dice_throwing = `<:dice_throwing:736084796190490704>`;
