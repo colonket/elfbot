@@ -20,7 +20,9 @@ client.on('message', msg => {
 	roll = msg.content.startsWith("!roll");
 	flip = msg.content.startsWith("!flip");
 	coin = msg.content.startsWith("!coin");
-	
+	sorry = msg.content.startsWith("!sorry");
+	hate = (contains(msg.content, insults) && contains(msg.content,['elfbot','Elf bot','elfboy','elfbutt', 'elf butt']));
+
 	if (roll){
 		rollDice(msg);
 	}
@@ -28,7 +30,12 @@ client.on('message', msg => {
 		args = msg.content.split(' ');
 		coinFlip(msg, args[1]);
 	}
-
+	if (sorry){
+		sorryElfBot(msg);
+	}
+	if (hate){
+		elfBotIsPissed(msg);
+	}
 });
 
 function coinFlip(msg, times = 1){
@@ -82,6 +89,10 @@ function rollDice(msg){
 		if (args[term].includes('d')){
 			[times,die_value] = args[term].split('d');
 			times = parseInt(times);
+			if (times > 128){
+				times = 128;
+				statement += `\n*The maximum dice you can roll is 128. Elf Bot can only roll so many...*\n`
+			}
 			if(isNaN(times)) times = 1;
 			die_value = parseInt(die_value);
 			statement += '[';
@@ -126,6 +137,53 @@ var activities = [
 	["a Vicious Mockery",{type: 'LISTENING'}]
 ]
 
+function sorryElfBot(msg){
+	flipValue = (Math.floor(Math.random() * 2) == 0);
+	if (flipValue)
+		outcome = `${elfbot_sad} You made so sad i don't know if I can forgive you...`;
+	else
+		outcome = `${elfbot_thankful} really? okay... hehe...`;
+	return msg.channel.send(outcome);	
+}
+
+function contains(string, array){
+	var value = 0;
+	for (i in array){
+		if(string.includes(array[i]))
+			value = 1;
+	}
+	return value;
+}
+
+function elfBotIsPissed(msg){
+	outcome = `${elfbot_pissed} `
+	outcome += pissed[Math.floor(Math.random() * pissed.length)]
+	return msg.channel.send(outcome);
+}
+
+var insults = [
+	'fuck you',
+	'i hate you',
+	'is a turd',
+	'you suck',
+	'elf butt',
+	'elfbutt'
+]
+
+var pissed = [
+	`I'm trying my best okay...`,
+	`Leave me alone...`,
+	`You're hurting my feelings...`,
+	'stop...',
+	`**STOP**`,
+	`I HAVE HAD ENOUGH`
+]
+
 client.login(config.token); // Let the bot log-in!
+
+// Summons elfbot's custom emojis from the *Magical* Discord CDN
 const dice_shaking = `<:dice_shaking:736084795871985675>` ;
 const dice_throwing = `<:dice_throwing:736084796190490704>`;
+const elfbot_sad = `<:elfbot_sad:736449977454428180>`;
+const elfbot_thankful = `<:elfbot_thankful:736452545240760491>`;
+const elfbot_pissed = `<:elfbot_pissed:736459175978074153>`;
