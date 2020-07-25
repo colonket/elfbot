@@ -17,11 +17,14 @@ client.on('ready', () => {
 
 // When a message is sent in the server
 client.on('message', msg => {
-	roll = msg.content.startsWith("!roll");
-	flip = msg.content.startsWith("!flip");
-	coin = msg.content.startsWith("!coin");
-	sorry = msg.content.startsWith("!sorry");
-	hate = (contains(msg.content, insults) && contains(msg.content,['elfbot','Elf bot','elfboy','elfbutt', 'elf butt']));
+	if(msg.author.bot) return;
+	var roll = msg.content.startsWith("!roll");
+	var flip = msg.content.startsWith("!flip");
+	var coin = msg.content.startsWith("!coin");
+	var help = msg.content.startsWith("!help");
+	var sorry = msg.content.startsWith("!sorry");
+	var has_insults = contains(msg.content, insults);
+	var has_name = contains(msg.content, names);
 
 	if (roll){
 		rollDice(msg);
@@ -30,10 +33,14 @@ client.on('message', msg => {
 		args = msg.content.split(' ');
 		coinFlip(msg, args[1]);
 	}
+	if (help){
+		msg.channel.send("**Available Commands:**\n!roll, !flip, !coin, !sorry\nElf Bot also responds to insults...");
+	}
 	if (sorry){
 		sorryElfBot(msg);
 	}
-	if (hate){
+	if (has_insults && has_name == 1){
+		console.log('Hate was detected');
 		elfBotIsPissed(msg);
 	}
 });
@@ -88,12 +95,13 @@ function rollDice(msg){
 	while(args[term] != null){
 		if (args[term].includes('d')){
 			[times,die_value] = args[term].split('d');
+			//parseInt(null)
 			times = parseInt(times);
 			if (times > 128){
 				times = 128;
-				statement += `\n*The maximum dice you can roll is 128. Elf Bot can only roll so many...*\n`
+				statement += `\n*The maximum dice you can roll is 128.${elfbot_pissed} Elf Bot can only roll so many...*\n`
 			}
-			if(isNaN(times)) times = 1;
+			if(isNaN(times)) times = 1; // Allows us to roll a dice without specifying how many... but also allows weird words to be quantities of dice equal to 1.
 			die_value = parseInt(die_value);
 			statement += '[';
 			for(i=1; i<=times; i++){
@@ -149,8 +157,9 @@ function sorryElfBot(msg){
 function contains(string, array){
 	var value = 0;
 	for (i in array){
-		if(string.includes(array[i]))
+		if(string.includes(array[i])){
 			value = 1;
+		}
 	}
 	return value;
 }
@@ -168,6 +177,15 @@ var insults = [
 	'you suck',
 	'elf butt',
 	'elfbutt'
+]
+
+var names = [
+	'elfbot',
+	'Elf bot',
+	'elf bot',
+	'elfboy',
+	'elfbutt',
+	'elf butt'
 ]
 
 var pissed = [
