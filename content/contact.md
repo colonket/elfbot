@@ -1,4 +1,4 @@
 ---
-title: get in touch
+title: contact
 ---
 {{<contact>}}
